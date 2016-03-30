@@ -1,0 +1,94 @@
+@import "http://meyerweb.com/eric/tools/css/reset/reset.css";
+@import "http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700";
+body {
+  background: #ffffff;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #666;
+}
+.widget {
+  display: inline-block;
+  vertical-align: top;
+  box-sizing: border-box;
+  background: #efefef;
+  width: 350px;
+  height: 450px;
+  margin: 20px 20px 20px 0;
+}
+.widget h1 {
+  background: #d6d6d6;
+  text-align: center;
+  font-size: 25px;
+  padding: 10px 0 10px 0;
+}
+.widget > div {
+  position: relative;
+}
+.bandwidth .bandwidth-chart {
+  height: 400px;
+  width: 350px;
+}
+.bandwidth .bandwidth-center {
+  height: 330px;
+  line-height: 330px;
+  position: absolute;
+  text-align: center;
+  top: 30px;
+  left: 55px;
+  vertical-align: middle;
+  width: 250px;
+  font-size: 33px;
+}
+#datausage h3,
+#bandwidth-peak h3 {
+  margin-top: 15px;
+  font-size: 50px;
+}
+#datausage > div,
+#bandwidth-peak > div {
+  padding-left: 20px;
+}
+#datausage h2 {
+  margin-top: 15px;
+  font-size: 50px;
+  text-align: center;
+}
+#dhcp h3 {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 50px;
+}
+#total-ip-leases {
+  text-align: center;
+  font-size: 150px;
+}
+#bandwidth-peak h2 {
+  font-size: 55px;
+  text-align: center;
+}
+@media only screen and (min-width: 300px) {
+  .container {
+    width: 300px;
+    margin: 0 auto;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .container {
+    width: 580px;
+    margin: 0 auto;
+  }
+}
+@media only screen and (min-width: 960px) {
+  .container {
+    width: 940px;
+  }
+}
+@media only screen and (min-width: 1140px) {
+  .container {
+    width: 1120px;
+  }
+}
+@media only screen and (min-width: 1360px) {
+  .container {
+    width: 1300px;
+  }
+}

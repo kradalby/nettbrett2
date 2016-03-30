@@ -1,0 +1,77 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>Nettbrett</title>
+        <meta name="description" content="Nettbrett">
+        <meta name="author" content="Kristoffer Dalby">
+
+        <link rel="stylesheet" href="static/css/bundle.css">
+
+        <!--[if lt IE 9]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div class="container bandwidth">
+            <div class="widget">
+                <h1>Båndbredde inn</h1>
+                <div>
+                    <div class="bandwidth-chart" id="bandwidth-in-chart">
+                    </div>
+                    <div class="bandwidth-center" id="bandwidth-in-center"></div>
+                </div>
+
+            </div>
+            <div class="widget bandwidth">
+                <h1>Båndbredde ut</h1>
+                <div>
+                    <div class="bandwidth-chart" id="bandwidth-out-chart">
+                    </div>
+                    <div class="bandwidth-center" id="bandwidth-out-center"></div>
+                </div>
+
+            </div>
+            <div id="bandwidth-peak" class="widget">
+                <h1>Båndbredde topp</h1>
+                <div>
+                    <div>
+                        <h3>Inn:</h3>
+                        <h2 id="bandwidth-peak-in">14 GB</h2>
+                    </div>
+                    <div>
+                        <h3>Ut:</h3>
+                        <h2 id="bandwidth-peak-out">5 GB</h2>
+                    </div>
+                </div>
+            </div>
+            <div id="datausage" class="widget">
+                <h1>Databruk</h1>
+                <div>
+                    <div>
+                        <h3>Inn:</h3>
+                        <h2 id="total-data-in">14 GB</h2>
+                    </div>
+                    <div>
+                        <h3>Ut:</h3>
+                        <h2 id="total-data-out">5 GB</h2>
+                    </div>
+                </div>
+            </div>
+            <div id="dhcp" class="widget">
+                <h1>Klienter</h1>
+                <div>
+                    <h3>Antall IP leieavtaler:</h3>
+                    <h2 id="total-ip-leases">345</h2>
+                </div>
+            </div>
+        </div>
+
+    </body>
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
+    <script src="static/js/bundle.js"></script>
+</html>
+
