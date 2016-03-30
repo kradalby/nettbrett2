@@ -8,14 +8,26 @@
 -behaviour(application).
 
 %% Application callbacks
--export([start/2
-        ,stop/1]).
+-export([
+    start/2,
+    stop/1
+]).
 
 %%====================================================================
 %% API
 %%====================================================================
 
 start(_StartType, _StartArgs) ->
+    Dispatch = cowboy_router:compile([
+        {'_', [
+            {"/", cowboy_static, {priv_file, nettbrett2, "index.html"}},
+            {"/static/[...]", cowboy_static, {priv_dir, nettbrett2, "static/", [{mimetypes, cow_mimetypes, all}]}}
+        ]}
+    ]),
+    {ok, _} = cowboy:start_http(nettbrett2_http_listener, 100,
+        [{port, 8080}],
+        [{env, [{dispatch, Dispatch}]}]
+    ),
     'nettbrett2_sup':start_link().
 
 %%--------------------------------------------------------------------
