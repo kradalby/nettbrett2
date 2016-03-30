@@ -3,12 +3,18 @@
 -export([init/2]).
 
 -export([
-    % websocket_handle/3,
+    websocket_handle/3,
     websocket_info/3
 ]).
 
 init(Request, _Options) ->
-    {cowboy_websocket, Request, [], 60000}.
+    ws_broadcast_handler:register(self()),
+    {cowboy_websocket, Request, [], infinity}.
+
+websocket_handle(Frame, Request, State) ->
+    io:format("Got HANDLE message: ~p~n", [Frame]),
+    {ok, Request, State}.
 
 websocket_info(Message, Request, State) ->
+    io:format("Got INFO message: ~p~n", [Message]),
     {reply, {text, Message}, Request, State}.
