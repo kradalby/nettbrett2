@@ -1,512 +1,160 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";var util=require("util"),bandwidth=require("./bandwidth.js"),du=require("./datausage.js"),leases=require("./leases.js"),app=function(){var a=function(){var a,t=window.location;return a="https:"===t.protocol?"wss:":"ws:",a+="//"+t.host+"/ws"};return{init:function(){var t=new WebSocket(a());t.onmessage=function(a){var t=JSON.parse(a.data);switch(t.dataType){case"uplink":bandwidth.draw_chart_bandwidth_in(t.data.speedDown,t.data.maxSpeed),bandwidth.draw_chart_bandwidth_out(t.data.speedUp,t.data.maxSpeed),bandwidth.update_peak_bandwidth(t.data.peakSpeedDown,t.data.peakSpeedUp),document.querySelector("#total-data-in").innerHTML=du.format_bytes(t.data.bytesReceived,3),document.querySelector("#total-data-out").innerHTML=du.format_bytes(t.data.bytesSent,3)}},leases.init()}}}();app.init();
+'use strict';
 
-},{"./bandwidth.js":2,"./datausage.js":3,"./leases.js":4,"util":9}],2:[function(require,module,exports){
-"use strict";var bandwidth=function(){var t={pieHole:.7,backgroundColor:"#efefef",chartArea:{width:"85%",height:"80%"},pieSliceText:"none",pieSliceBorderColor:"black",tooltip:{trigger:"none"},legend:"none",slices:{0:{color:"pink"},1:{color:"transparent"}}},e=function(t,e){var n=[["",""]],i=t/e*100,r=100-i;return n.push(["",i]),n.push(["",r]),n=google.visualization.arrayToDataTable(n)},n=function(t,e){if(0==t)return"0 bit/s";var n=1024,i=e+1||3,r=["bit/s","Kbit/s","Mbit/s","Gbit/s","Tbit/s","Pbit/s","Ebit/s","Zbit/s","Ybit/s"],o=Math.floor(Math.log(t)/Math.log(n));return(t/Math.pow(n,o)).toPrecision(i)+" "+r[o]},i=new google.visualization.PieChart(document.getElementById("bandwidth-in-chart")),r=new google.visualization.PieChart(document.getElementById("bandwidth-out-chart")),o=function(r,o){var a=document.querySelector("#bandwidth-in-center"),d=e(r,o);i.draw(d,t),a.innerHTML=n(r,2)},a=function(i,o){var a=document.querySelector("#bandwidth-out-center"),d=e(i,o);r.draw(d,t),a.innerHTML=n(i,2)},d=function(t,e){var i=document.querySelector("#bandwidth-peak-in"),r=document.querySelector("#bandwidth-peak-out");i.innerHTML=n(t,2),r.innerHTML=n(e,2)};return{format_speed:n,draw_chart_bandwidth_in:o,draw_chart_bandwidth_out:a,update_peak_bandwidth:d}}();module.exports=bandwidth;
+var util = require('util');
+var bandwidth = require('./bandwidth.js');
+var du = require('./datausage.js');
+// let leases = require('./leases.js')
+
+var app = function () {
+
+  var getWSAddress = function getWSAddress() {
+    var loc = window.location,
+        wsurl = void 0;
+    if (loc.protocol === 'https:') {
+      wsurl = 'wss:';
+    } else {
+      wsurl = 'ws:';
+    }
+    wsurl += '//' + loc.host + '/ws';
+
+    return wsurl;
+  };
+
+  var hideToggle = function hideToggle(element) {
+    if (element.style.display === 'none') {
+      element.style.display = 'block';
+    } else {
+      element.style.display = 'none';
+    }
+  };
+
+  return {
+    init: function init() {
+      var socket = new WebSocket(getWSAddress());
+
+      socket.onmessage = function (event) {
+        console.log(event.data);
+        var msg = JSON.parse(event.data);
+
+        switch (msg.dataType) {
+          case 'uplink':
+            bandwidth.draw_chart_bandwidth_in(msg.data.speedDown, msg.data.maxSpeed);
+            bandwidth.draw_chart_bandwidth_out(msg.data.speedUp, msg.data.maxSpeed);
+            bandwidth.update_peak_bandwidth(msg.data.peakSpeedDown, msg.data.peakSpeedUp);
+            document.querySelector('#total-data-in').innerHTML = du.format_bytes(msg.data.bytesReceived, 3);
+            document.querySelector('#total-data-out').innerHTML = du.format_bytes(msg.data.bytesSent, 3);
+            break;
+        }
+      };
+
+      //leases.init()
+    }
+  };
+}();
+
+app.init();
+
+},{"./bandwidth.js":2,"./datausage.js":3,"util":7}],2:[function(require,module,exports){
+'use strict';
+
+var bandwidth = function () {
+
+    var chart_options = {
+        pieHole: 0.7,
+        backgroundColor: "#efefef",
+        chartArea: { 'width': '85%', 'height': '80%' },
+
+        pieSliceText: 'none',
+        pieSliceBorderColor: "black",
+        tooltip: { trigger: 'none' },
+        legend: 'none',
+        slices: {
+            0: { color: 'pink' },
+            1: { color: 'transparent' }
+        }
+    };
+
+    var create_chart_data = function create_chart_data(bits, max) {
+        var data = [["", ""]];
+
+        var used = bits / max * 100;
+        var unused = 100 - used;
+
+        data.push(["", used]);
+        data.push(["", unused]);
+
+        data = google.visualization.arrayToDataTable(data);
+        return data;
+    };
+
+    var format_speed = function format_speed(bits_per_second, decimals) {
+        if (bits_per_second == 0) return '0 bit/s';
+        var k = 1024;
+        var dm = decimals + 1 || 3;
+        var sizes = ['bit/s', 'Kbit/s', 'Mbit/s', 'Gbit/s', 'Tbit/s', 'Pbit/s', 'Ebit/s', 'Zbit/s', 'Ybit/s'];
+        var i = Math.floor(Math.log(bits_per_second) / Math.log(k));
+        return (bits_per_second / Math.pow(k, i)).toPrecision(dm) + ' ' + sizes[i];
+    };
+
+    var chart_bandwidth_in = new google.visualization.PieChart(document.getElementById('bandwidth-in-chart'));
+    var chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'));
+
+    var draw_chart_bandwidth_in = function draw_chart_bandwidth_in(bits, max) {
+        var chart_center_bandwidth_in = document.querySelector("#bandwidth-in-center");
+        var data = create_chart_data(bits, max);
+
+        chart_bandwidth_in.draw(data, chart_options);
+        chart_center_bandwidth_in.innerHTML = format_speed(bits, 2);
+    };
+
+    var draw_chart_bandwidth_out = function draw_chart_bandwidth_out(bits, max) {
+        var chart_center_bandwidth_out = document.querySelector("#bandwidth-out-center");
+        var data = create_chart_data(bits, max);
+
+        chart_bandwidth_out.draw(data, chart_options);
+        chart_center_bandwidth_out.innerHTML = format_speed(bits, 2);
+    };
+
+    var update_peak_bandwidth = function update_peak_bandwidth(inn, out) {
+        var bandwidth_peak_in = document.querySelector("#bandwidth-peak-in");
+        var bandwidth_peak_out = document.querySelector("#bandwidth-peak-out");
+
+        bandwidth_peak_in.innerHTML = format_speed(inn, 2);
+        bandwidth_peak_out.innerHTML = format_speed(out, 2);
+    };
+
+    return {
+        format_speed: format_speed,
+        draw_chart_bandwidth_in: draw_chart_bandwidth_in,
+        draw_chart_bandwidth_out: draw_chart_bandwidth_out,
+        update_peak_bandwidth: update_peak_bandwidth
+    };
+}();
+
+module.exports = bandwidth;
 
 },{}],3:[function(require,module,exports){
-"use strict";var datausage=function(){var t=function(t,a){if(0==t)return"0 Byte";var r=1e3,e=a+1||3,o=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],B=Math.floor(Math.log(t)/Math.log(r));return(t/Math.pow(r,B)).toPrecision(e)+" "+o[B]};return{format_bytes:t}}();module.exports=datausage;
+'use strict';
+
+var datausage = function () {
+    var format_bytes = function format_bytes(bytes, decimals) {
+        if (bytes == 0) return '0 Byte';
+        var k = 1000;
+        var dm = decimals + 1 || 3;
+        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return (bytes / Math.pow(k, i)).toPrecision(dm) + ' ' + sizes[i];
+    };
+
+    return {
+        format_bytes: format_bytes
+    };
+}();
+
+module.exports = datausage;
 
 },{}],4:[function(require,module,exports){
-"use strict";var request=require("browser-request"),leases=function(){var e=(document.getElementById("dhcp"),document.getElementById("total-ip-leases")),t=function(e){request(e,function(e,t,o){if(e)throw e;console.log(o);var r=JSON.parse(o);n(r.summary.used)})},n=function(t){e.innerHTML=t},o=function r(e){t(e),window.setTimeout(function(){r(e)},5e3)};return{init:function(){var e="http://dolly.pp24.polarparty.no:81/cgi-bin/leases.cgi";o(e)}}}();module.exports=leases;
-
-},{"browser-request":5}],5:[function(require,module,exports){
-// Browser Request
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// UMD HEADER START 
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], factory);
-    } else if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-        module.exports = factory();
-    } else {
-        // Browser globals (root is window)
-        root.returnExports = factory();
-  }
-}(this, function () {
-// UMD HEADER END
-
-var XHR = XMLHttpRequest
-if (!XHR) throw new Error('missing XMLHttpRequest')
-request.log = {
-  'trace': noop, 'debug': noop, 'info': noop, 'warn': noop, 'error': noop
-}
-
-var DEFAULT_TIMEOUT = 3 * 60 * 1000 // 3 minutes
-
-//
-// request
-//
-
-function request(options, callback) {
-  // The entry-point to the API: prep the options object and pass the real work to run_xhr.
-  if(typeof callback !== 'function')
-    throw new Error('Bad callback given: ' + callback)
-
-  if(!options)
-    throw new Error('No options given')
-
-  var options_onResponse = options.onResponse; // Save this for later.
-
-  if(typeof options === 'string')
-    options = {'uri':options};
-  else
-    options = JSON.parse(JSON.stringify(options)); // Use a duplicate for mutating.
-
-  options.onResponse = options_onResponse // And put it back.
-
-  if (options.verbose) request.log = getLogger();
-
-  if(options.url) {
-    options.uri = options.url;
-    delete options.url;
-  }
-
-  if(!options.uri && options.uri !== "")
-    throw new Error("options.uri is a required argument");
-
-  if(typeof options.uri != "string")
-    throw new Error("options.uri must be a string");
-
-  var unsupported_options = ['proxy', '_redirectsFollowed', 'maxRedirects', 'followRedirect']
-  for (var i = 0; i < unsupported_options.length; i++)
-    if(options[ unsupported_options[i] ])
-      throw new Error("options." + unsupported_options[i] + " is not supported")
-
-  options.callback = callback
-  options.method = options.method || 'GET';
-  options.headers = options.headers || {};
-  options.body    = options.body || null
-  options.timeout = options.timeout || request.DEFAULT_TIMEOUT
-
-  if(options.headers.host)
-    throw new Error("Options.headers.host is not supported");
-
-  if(options.json) {
-    options.headers.accept = options.headers.accept || 'application/json'
-    if(options.method !== 'GET')
-      options.headers['content-type'] = 'application/json'
-
-    if(typeof options.json !== 'boolean')
-      options.body = JSON.stringify(options.json)
-    else if(typeof options.body !== 'string')
-      options.body = JSON.stringify(options.body)
-  }
-  
-  //BEGIN QS Hack
-  var serialize = function(obj) {
-    var str = [];
-    for(var p in obj)
-      if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-      }
-    return str.join("&");
-  }
-  
-  if(options.qs){
-    var qs = (typeof options.qs == 'string')? options.qs : serialize(options.qs);
-    if(options.uri.indexOf('?') !== -1){ //no get params
-        options.uri = options.uri+'&'+qs;
-    }else{ //existing get params
-        options.uri = options.uri+'?'+qs;
-    }
-  }
-  //END QS Hack
-  
-  //BEGIN FORM Hack
-  var multipart = function(obj) {
-    //todo: support file type (useful?)
-    var result = {};
-    result.boundry = '-------------------------------'+Math.floor(Math.random()*1000000000);
-    var lines = [];
-    for(var p in obj){
-        if (obj.hasOwnProperty(p)) {
-            lines.push(
-                '--'+result.boundry+"\n"+
-                'Content-Disposition: form-data; name="'+p+'"'+"\n"+
-                "\n"+
-                obj[p]+"\n"
-            );
-        }
-    }
-    lines.push( '--'+result.boundry+'--' );
-    result.body = lines.join('');
-    result.length = result.body.length;
-    result.type = 'multipart/form-data; boundary='+result.boundry;
-    return result;
-  }
-  
-  if(options.form){
-    if(typeof options.form == 'string') throw('form name unsupported');
-    if(options.method === 'POST'){
-        var encoding = (options.encoding || 'application/x-www-form-urlencoded').toLowerCase();
-        options.headers['content-type'] = encoding;
-        switch(encoding){
-            case 'application/x-www-form-urlencoded':
-                options.body = serialize(options.form).replace(/%20/g, "+");
-                break;
-            case 'multipart/form-data':
-                var multi = multipart(options.form);
-                //options.headers['content-length'] = multi.length;
-                options.body = multi.body;
-                options.headers['content-type'] = multi.type;
-                break;
-            default : throw new Error('unsupported encoding:'+encoding);
-        }
-    }
-  }
-  //END FORM Hack
-
-  // If onResponse is boolean true, call back immediately when the response is known,
-  // not when the full request is complete.
-  options.onResponse = options.onResponse || noop
-  if(options.onResponse === true) {
-    options.onResponse = callback
-    options.callback = noop
-  }
-
-  // XXX Browsers do not like this.
-  //if(options.body)
-  //  options.headers['content-length'] = options.body.length;
-
-  // HTTP basic authentication
-  if(!options.headers.authorization && options.auth)
-    options.headers.authorization = 'Basic ' + b64_enc(options.auth.username + ':' + options.auth.password);
-
-  return run_xhr(options)
-}
-
-var req_seq = 0
-function run_xhr(options) {
-  var xhr = new XHR
-    , timed_out = false
-    , is_cors = is_crossDomain(options.uri)
-    , supports_cors = ('withCredentials' in xhr)
-
-  req_seq += 1
-  xhr.seq_id = req_seq
-  xhr.id = req_seq + ': ' + options.method + ' ' + options.uri
-  xhr._id = xhr.id // I know I will type "_id" from habit all the time.
-
-  if(is_cors && !supports_cors) {
-    var cors_err = new Error('Browser does not support cross-origin request: ' + options.uri)
-    cors_err.cors = 'unsupported'
-    return options.callback(cors_err, xhr)
-  }
-
-  xhr.timeoutTimer = setTimeout(too_late, options.timeout)
-  function too_late() {
-    timed_out = true
-    var er = new Error('ETIMEDOUT')
-    er.code = 'ETIMEDOUT'
-    er.duration = options.timeout
-
-    request.log.error('Timeout', { 'id':xhr._id, 'milliseconds':options.timeout })
-    return options.callback(er, xhr)
-  }
-
-  // Some states can be skipped over, so remember what is still incomplete.
-  var did = {'response':false, 'loading':false, 'end':false}
-
-  xhr.onreadystatechange = on_state_change
-  xhr.open(options.method, options.uri, true) // asynchronous
-  if(is_cors)
-    xhr.withCredentials = !! options.withCredentials
-  xhr.send(options.body)
-  return xhr
-
-  function on_state_change(event) {
-    if(timed_out)
-      return request.log.debug('Ignoring timed out state change', {'state':xhr.readyState, 'id':xhr.id})
-
-    request.log.debug('State change', {'state':xhr.readyState, 'id':xhr.id, 'timed_out':timed_out})
-
-    if(xhr.readyState === XHR.OPENED) {
-      request.log.debug('Request started', {'id':xhr.id})
-      for (var key in options.headers)
-        xhr.setRequestHeader(key, options.headers[key])
-    }
-
-    else if(xhr.readyState === XHR.HEADERS_RECEIVED)
-      on_response()
-
-    else if(xhr.readyState === XHR.LOADING) {
-      on_response()
-      on_loading()
-    }
-
-    else if(xhr.readyState === XHR.DONE) {
-      on_response()
-      on_loading()
-      on_end()
-    }
-  }
-
-  function on_response() {
-    if(did.response)
-      return
-
-    did.response = true
-    request.log.debug('Got response', {'id':xhr.id, 'status':xhr.status})
-    clearTimeout(xhr.timeoutTimer)
-    xhr.statusCode = xhr.status // Node request compatibility
-
-    // Detect failed CORS requests.
-    if(is_cors && xhr.statusCode == 0) {
-      var cors_err = new Error('CORS request rejected: ' + options.uri)
-      cors_err.cors = 'rejected'
-
-      // Do not process this request further.
-      did.loading = true
-      did.end = true
-
-      return options.callback(cors_err, xhr)
-    }
-
-    options.onResponse(null, xhr)
-  }
-
-  function on_loading() {
-    if(did.loading)
-      return
-
-    did.loading = true
-    request.log.debug('Response body loading', {'id':xhr.id})
-    // TODO: Maybe simulate "data" events by watching xhr.responseText
-  }
-
-  function on_end() {
-    if(did.end)
-      return
-
-    did.end = true
-    request.log.debug('Request done', {'id':xhr.id})
-
-    xhr.body = xhr.responseText
-    if(options.json) {
-      try        { xhr.body = JSON.parse(xhr.responseText) }
-      catch (er) { return options.callback(er, xhr)        }
-    }
-
-    options.callback(null, xhr, xhr.body)
-  }
-
-} // request
-
-request.withCredentials = false;
-request.DEFAULT_TIMEOUT = DEFAULT_TIMEOUT;
-
-//
-// defaults
-//
-
-request.defaults = function(options, requester) {
-  var def = function (method) {
-    var d = function (params, callback) {
-      if(typeof params === 'string')
-        params = {'uri': params};
-      else {
-        params = JSON.parse(JSON.stringify(params));
-      }
-      for (var i in options) {
-        if (params[i] === undefined) params[i] = options[i]
-      }
-      return method(params, callback)
-    }
-    return d
-  }
-  var de = def(request)
-  de.get = def(request.get)
-  de.post = def(request.post)
-  de.put = def(request.put)
-  de.head = def(request.head)
-  return de
-}
-
-//
-// HTTP method shortcuts
-//
-
-var shortcuts = [ 'get', 'put', 'post', 'head' ];
-shortcuts.forEach(function(shortcut) {
-  var method = shortcut.toUpperCase();
-  var func   = shortcut.toLowerCase();
-
-  request[func] = function(opts) {
-    if(typeof opts === 'string')
-      opts = {'method':method, 'uri':opts};
-    else {
-      opts = JSON.parse(JSON.stringify(opts));
-      opts.method = method;
-    }
-
-    var args = [opts].concat(Array.prototype.slice.apply(arguments, [1]));
-    return request.apply(this, args);
-  }
-})
-
-//
-// CouchDB shortcut
-//
-
-request.couch = function(options, callback) {
-  if(typeof options === 'string')
-    options = {'uri':options}
-
-  // Just use the request API to do JSON.
-  options.json = true
-  if(options.body)
-    options.json = options.body
-  delete options.body
-
-  callback = callback || noop
-
-  var xhr = request(options, couch_handler)
-  return xhr
-
-  function couch_handler(er, resp, body) {
-    if(er)
-      return callback(er, resp, body)
-
-    if((resp.statusCode < 200 || resp.statusCode > 299) && body.error) {
-      // The body is a Couch JSON object indicating the error.
-      er = new Error('CouchDB error: ' + (body.error.reason || body.error.error))
-      for (var key in body)
-        er[key] = body[key]
-      return callback(er, resp, body);
-    }
-
-    return callback(er, resp, body);
-  }
-}
-
-//
-// Utility
-//
-
-function noop() {}
-
-function getLogger() {
-  var logger = {}
-    , levels = ['trace', 'debug', 'info', 'warn', 'error']
-    , level, i
-
-  for(i = 0; i < levels.length; i++) {
-    level = levels[i]
-
-    logger[level] = noop
-    if(typeof console !== 'undefined' && console && console[level])
-      logger[level] = formatted(console, level)
-  }
-
-  return logger
-}
-
-function formatted(obj, method) {
-  return formatted_logger
-
-  function formatted_logger(str, context) {
-    if(typeof context === 'object')
-      str += ' ' + JSON.stringify(context)
-
-    return obj[method].call(obj, str)
-  }
-}
-
-// Return whether a URL is a cross-domain request.
-function is_crossDomain(url) {
-  var rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/
-
-  // jQuery #8138, IE may throw an exception when accessing
-  // a field from window.location if document.domain has been set
-  var ajaxLocation
-  try { ajaxLocation = location.href }
-  catch (e) {
-    // Use the href attribute of an A element since IE will modify it given document.location
-    ajaxLocation = document.createElement( "a" );
-    ajaxLocation.href = "";
-    ajaxLocation = ajaxLocation.href;
-  }
-
-  var ajaxLocParts = rurl.exec(ajaxLocation.toLowerCase()) || []
-    , parts = rurl.exec(url.toLowerCase() )
-
-  var result = !!(
-    parts &&
-    (  parts[1] != ajaxLocParts[1]
-    || parts[2] != ajaxLocParts[2]
-    || (parts[3] || (parts[1] === "http:" ? 80 : 443)) != (ajaxLocParts[3] || (ajaxLocParts[1] === "http:" ? 80 : 443))
-    )
-  )
-
-  //console.debug('is_crossDomain('+url+') -> ' + result)
-  return result
-}
-
-// MIT License from http://phpjs.org/functions/base64_encode:358
-function b64_enc (data) {
-    // Encodes string using MIME base64 algorithm
-    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0, ac = 0, enc="", tmp_arr = [];
-
-    if (!data) {
-        return data;
-    }
-
-    // assume utf8 data
-    // data = this.utf8_encode(data+'');
-
-    do { // pack three octets into four hexets
-        o1 = data.charCodeAt(i++);
-        o2 = data.charCodeAt(i++);
-        o3 = data.charCodeAt(i++);
-
-        bits = o1<<16 | o2<<8 | o3;
-
-        h1 = bits>>18 & 0x3f;
-        h2 = bits>>12 & 0x3f;
-        h3 = bits>>6 & 0x3f;
-        h4 = bits & 0x3f;
-
-        // use hexets to index into b64, and append result to encoded string
-        tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
-    } while (i < data.length);
-
-    enc = tmp_arr.join('');
-
-    switch (data.length % 3) {
-        case 1:
-            enc = enc.slice(0, -2) + '==';
-        break;
-        case 2:
-            enc = enc.slice(0, -1) + '=';
-        break;
-    }
-
-    return enc;
-}
-    return request;
-//UMD FOOTER START
-}));
-//UMD FOOTER END
-
-},{}],6:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -531,7 +179,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -624,14 +272,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],8:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1221,4 +869,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":8,"_process":7,"inherits":6}]},{},[1]);
+},{"./support/isBuffer":6,"_process":5,"inherits":4}]},{},[1]);
