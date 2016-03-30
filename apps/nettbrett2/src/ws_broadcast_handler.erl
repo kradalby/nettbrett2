@@ -32,7 +32,7 @@ init([]) ->
 handle_call({broadcast, Message}, _From, State) ->
     io:format("Sending to ~p~n", [State]),
     % [Pid ! Message || {_Ref, Pid} <- State],
-    lists:foreach(fun({_Ref, Pid}) -> Pid ! Message, io:format("~p ", [Pid]) end, State),
+    lists:foreach(fun({_Ref, Pid}) -> Pid ! Message end, State),
     {reply, ok, State};
 
 handle_call(Message, _From, State) ->
