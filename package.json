@@ -1,0 +1,32 @@
+{
+  "name": "nettbrett2",
+  "version": "0.0.1",
+  "description": "nettbrett2",
+  "main": ".",
+  "devDependencies": {
+    "autoprefixer": "^6.3.5",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "less": "^2.6.1",
+    "uglifyify": "^3.0.1"
+  },
+  "scripts": {
+    "test": "."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kradalby/nettbrett2.git"
+  },
+  "author": "Kristoffer Dalby",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kradalby/nettbrett2/issues"
+  },
+  "browserify": {
+    "transform": [
+      "babelify",
+      "uglifyify"
+    ]
+  },
+  "homepage": "https://github.com/kradalby/nettbrett2"
+}
