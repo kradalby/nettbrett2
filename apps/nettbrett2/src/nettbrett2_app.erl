@@ -21,7 +21,8 @@ start(_StartType, _StartArgs) ->
     Dispatch = cowboy_router:compile([
         {'_', [
             {"/", cowboy_static, {priv_file, nettbrett2, "index.html"}},
-            {"/static/[...]", cowboy_static, {priv_dir, nettbrett2, "static/", [{mimetypes, cow_mimetypes, all}]}}
+            {"/static/[...]", cowboy_static, {priv_dir, nettbrett2, "static/", [{mimetypes, cow_mimetypes, all}]}},
+            {"/ws", ws_handler, []}
         ]}
     ]),
     {ok, _} = cowboy:start_http(nettbrett2_http_listener, 100,
