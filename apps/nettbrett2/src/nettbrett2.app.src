@@ -9,7 +9,7 @@
     cowboy,
     erlsrcds,
     erl_ip4_utils,
-    procket
+    gen_icmp
    ]},
   {env,[]},
   {modules, []},
