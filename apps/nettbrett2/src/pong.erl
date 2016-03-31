@@ -37,15 +37,12 @@ init([]) ->
     {ok, #state{}}.
 
 handle_call({scan, Networks}, From, State = #state{}) ->
-    IPList = networks_to_ip_addresses(Networks, []),
-    io:format("IPList: ~p~n", [IPList]),
+    IPList = erl_ip4_utils:networks_to_ip_addresses(Networks, []),
     Hosts = length(IPList),
-    io:format("Number of addr: ~p ~n", [Hosts]),
     Refs = [ping_spawn(IP) || IP <- IPList],
     {noreply, State#state{caller=From, hosts_left=Hosts, refs=Refs}}.
 
 handle_cast({alive}, State = #state{hosts_alive=Alive}) ->
-    io:format("Received alive +1~n"),
     {noreply, State#state{hosts_alive=Alive + 1}}.
 
 handle_info({'DOWN', Ref, process, Pid, _Info}, State = #state{refs=Refs, hosts_left=Left, hosts_alive=Alive, caller=Caller}) ->
@@ -74,20 +71,12 @@ alive() ->
 scan(Networks) ->
     gen_server:call(?MODULE, {scan, Networks}, infinity).
 
-networks_to_ip_addresses([], State) ->
-    State;
-networks_to_ip_addresses([{Network, Bits}|Tail], State) ->
-    NewState = State ++ erl_ip4_utils:network_to_ip_list(Network, Bits),
-    networks_to_ip_addresses(Tail, NewState).
-
 ping_spawn(IP) ->
     spawn_monitor(fun () ->
         % io:format("Pinging: ~p from ~p ~n", [IP, self()]),
         case gen_icmp:ping(IP, [{sequence, 10}]) of
             [{ok, IP, IP, IP, _, _}] ->
                 ?MODULE:alive();
-            X ->
-                io:format("Got: ~p~n", [X]),
-                X
+            X -> X
         end
     end).
