@@ -35,6 +35,13 @@ init([]) ->
             5000,
             worker,
             [ws_broadcast_handler]
+        },
+        {
+            ping, {pong, start_link, []},
+            permanent,
+            5000,
+            worker,
+            [pong]
         }
     ]} }.
 
