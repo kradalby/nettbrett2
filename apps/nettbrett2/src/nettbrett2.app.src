@@ -7,7 +7,9 @@
    [kernel,
     stdlib,
     cowboy,
-    erlsrcds
+    erlsrcds,
+    erl_ip4_utils,
+    procket
    ]},
   {env,[]},
   {modules, []},
