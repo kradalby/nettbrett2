@@ -1,14 +1,12 @@
 'use strict'
-let util = require('util')
 let bandwidth = require('./bandwidth.js')
 let du = require('./datausage.js')
 // let leases = require('./leases.js')
 
-
 let app = (function () {
-
   let getWSAddress = function () {
-    let loc = window.location, wsurl
+    let loc = window.location
+    let wsurl = ''
     if (loc.protocol === 'https:') {
       wsurl = 'wss:'
     } else {
@@ -35,23 +33,19 @@ let app = (function () {
         console.log(event.data)
         let msg = JSON.parse(event.data)
 
-        switch(msg.dataType) {
+        switch (msg.dataType) {
           case 'uplink':
-          bandwidth.draw_chart_bandwidth_in(msg.data.speedDown, msg.data.maxSpeed)
-          bandwidth.draw_chart_bandwidth_out(msg.data.speedUp, msg.data.maxSpeed)
-          bandwidth.update_peak_bandwidth(msg.data.peakSpeedDown, msg.data.peakSpeedUp)
-          document.querySelector('#total-data-in').innerHTML = du.format_bytes(msg.data.bytesReceived, 3)
-          document.querySelector('#total-data-out').innerHTML = du.format_bytes(msg.data.bytesSent, 3)
-          break
+            bandwidth.draw_chart_bandwidth_in(msg.data.speedDown, msg.data.maxSpeed)
+            bandwidth.draw_chart_bandwidth_out(msg.data.speedUp, msg.data.maxSpeed)
+            bandwidth.update_peak_bandwidth(msg.data.peakSpeedDown, msg.data.peakSpeedUp)
+            document.querySelector('#total-data-in').innerHTML = du.format_bytes(msg.data.bytesReceived, 3)
+            document.querySelector('#total-data-out').innerHTML = du.format_bytes(msg.data.bytesSent, 3)
+            break
         }
-
       }
-
-      //leases.init()
-
-    },
+      // leases.init()
+    }
   }
-
 })()
 
 app.init()
