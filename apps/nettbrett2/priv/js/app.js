@@ -42,17 +42,17 @@ let app = (function () {
         console.log(event.data)
         let msg = JSON.parse(event.data)
 
-        switch (msg.dataType) {
-          case 'uplink':
-            bandwidth.draw_chart_bandwidth_in(msg.data.speedDown, msg.data.maxSpeed)
-            bandwidth.draw_chart_bandwidth_out(msg.data.speedUp, msg.data.maxSpeed)
-            bandwidth.update_peak_bandwidth(msg.data.peakSpeedDown, msg.data.peakSpeedUp)
-            datausage.update_in(msg.data.bytesReceived)
-            datausage.update_out(msg.data.bytesSent)
+        switch (msg.data_type) {
+          case 'bandwidth':
+            bandwidth.draw_chart_bandwidth_in(msg.data.speed_in, msg.data.max_seed)
+            bandwidth.draw_chart_bandwidth_out(msg.data.speed_out, msg.data.max_speed)
+            bandwidth.update_peak_bandwidth(msg.data.peak_speed_in, msg.data.peak_speed_out)
+            datausage.update_in(msg.data.bytes_in)
+            datausage.update_out(msg.data.bytes_out)
             break
           case 'pong':
             console.log('received from pong:')
-            console.log(msg.data)
+            console.log(msg.data.hosts)
             break
         }
       }
