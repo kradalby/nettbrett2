@@ -27,9 +27,15 @@
 ]).
 
 -record(state, {
+    host = "129.241.105.205",
+    interface_in = [1,3,6,1,2,1,31,1,1,1,6,2],
+    interface_out = [1,3,6,1,2,1,31,1,1,1,10,2],
+    uptime_oid = [1,3,6,1,2,1,1,3,0],
     max_speed = 0,
     peak_in = 0,
     peak_out = 0,
+    speed_in = 0,
+    speed_out = 0,
     bytes_in = 0,
     bytes_out = 0,
     time_in = 0,
@@ -45,17 +51,9 @@ start_link() ->
 init([]) ->
     {ok, #state{}}.
 
-handle_call({test}, _From, S) ->
-    Host = "129.241.105.205",
-    InterfaceIn = [1,3,6,1,2,1,31,1,1,1,6,2],
-    Uptime = [1,3,6,1,2,1,1,3,0],
-
-    [{InterfaceIn, _, BytesIn},{Uptime, _, TimeTicks}] = simple_snmp:get(Host, [InterfaceIn, Uptime]),
-    io:format("In: ~p~n Ticks: ~p~n", [BytesIn, TimeTicks]),
-
-    Speed = calculate_speed(BytesIn, S#state.bytes_in, TimeTicks, S#state.time_in),
-
-    {reply, Speed, S#state{bytes_in=BytesIn, time_in=TimeTicks}}.
+handle_call({test}, _From, State) ->
+    NewState = update_state(State),
+    {reply, NewState, NewState}.
 
 handle_cast(_Message, State) ->
     {noreply, State}.
@@ -69,6 +67,41 @@ code_change(_OldVersion, State, _Extra) ->
 
 terminate(_Reason, _State) ->
     ok.
+
+update_state(S = #state{interface_in=InterfaceIn,
+        interface_out=InterfaceOut,
+        uptime_oid=Uptime}
+        ) ->
+
+    {BytesIn, TimestampIn} =
+        case simple_snmp:get(S#state.host, [InterfaceIn, Uptime]) of
+            [{InterfaceIn, _, Bytes},{Uptime, _, Timestamp}] ->
+                {Bytes, Timestamp};
+            {error, _} ->
+                {S#state.bytes_in, S#state.time_in}
+        end,
+    SpeedIn = calculate_speed(BytesIn, S#state.bytes_in, TimestampIn, S#state.time_in),
+
+    {BytesOut, TimestampOut} =
+        case simple_snmp:get(S#state.host, [InterfaceOut, Uptime]) of
+            [{InterfaceOut, _, Bytes2},{Uptime, _, Timestamp2}] ->
+                {Bytes2, Timestamp2};
+            {error, _} ->
+                {S#state.bytes_out, S#state.time_out}
+        end,
+    SpeedOut = calculate_speed(BytesOut, S#state.bytes_out, TimestampOut, S#state.time_out),
+
+    S#state{
+        peak_in = max(S#state.peak_in, SpeedIn),
+        peak_out = max(S#state.peak_out, SpeedOut),
+        speed_in = SpeedIn,
+        speed_out = SpeedOut,
+        bytes_in = BytesIn,
+        bytes_out = BytesOut,
+        time_in = TimestampIn,
+        time_out = TimestampOut
+    }.
+
 
 -spec calculate_speed(integer(), integer(), integer(), integer()) -> integer().
 calculate_speed(CurrentBytes, PastBytes, CurrentTimeStamp, PastTimeStamp) ->
