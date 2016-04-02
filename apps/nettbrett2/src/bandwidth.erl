@@ -19,6 +19,7 @@
 
 % API
 -export([
+    get/0
 ]).
 
 % Test
@@ -66,9 +67,10 @@ init([]) ->
     },
     {ok, State}.
 
-handle_call({test}, _From, State) ->
+handle_call(get, _From, State) ->
     NewState = update_state(State),
-    {reply, NewState, NewState}.
+    JSON = json_payload(NewState),
+    {reply, JSON, NewState}.
 
 handle_cast(_Message, State) ->
     {noreply, State}.
@@ -117,6 +119,29 @@ update_state(S = #state{interface_in=InterfaceIn,
         time_out = TimestampOut
     }.
 
+json_payload(_State=#state{
+        max_speed = MaxSpeed,
+        peak_in = PeakIn,
+        peak_out = PeakOut,
+        speed_in = SpeedIn,
+        speed_out = SpeedOut,
+        bytes_in = BytesIn,
+        bytes_out = BytesOut
+    }) ->
+        Map = #{
+            <<"data_type">> => <<"bandwidth">>,
+            <<"data">> => #{
+                <<"max_speed">> => MaxSpeed,
+                <<"peak_speed_in">> => PeakIn,
+                <<"peak_speed_out">> => PeakOut,
+                <<"speed_in">> => SpeedIn,
+                <<"speed_out">> => SpeedOut,
+                <<"bytes_in">> => BytesIn,
+                <<"bytes_out">> => BytesOut
+            }
+        },
+    jiffy:encode(Map).
+
 
 -spec calculate_speed(integer(), integer(), integer(), integer()) -> integer().
 calculate_speed(CurrentBytes, PastBytes, CurrentTimeStamp, PastTimeStamp) ->
@@ -129,3 +154,6 @@ calculate_speed(CurrentBytes, PastBytes, CurrentTimeStamp, PastTimeStamp) ->
 
     % Bits per seconds
     round((ByteDelta * 8) / TimeDelta).
+
+get() ->
+    gen_server:call(bandwidth, get).
