@@ -17,7 +17,7 @@
 
 -export([
     alive/0,
-    scan/1
+    scan/0
 ]).
 
 -record(state, {
@@ -68,7 +68,8 @@ terminate(_Reason, _State) ->
 alive() ->
     gen_server:cast(?MODULE, {alive}).
 
-scan(Networks) ->
+scan() ->
+    Networks = application:get_env('nettbrett2', networks, {"192.168.0.0", 23}),
     gen_server:call(?MODULE, {scan, Networks}, infinity).
 
 ping_spawn(IP) ->
