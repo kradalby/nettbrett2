@@ -27,10 +27,11 @@
 ]).
 
 -record(state, {
-    host = "129.241.105.205",
-    interface_in = [1,3,6,1,2,1,31,1,1,1,6,2],
-    interface_out = [1,3,6,1,2,1,31,1,1,1,10,2],
-    uptime_oid = [1,3,6,1,2,1,1,3,0],
+    host = "",
+    interface_in = [],
+    interface_out = [],
+    uptime_oid = [],
+    community = "public",
     max_speed = 0,
     peak_in = 0,
     peak_out = 0,
@@ -49,7 +50,21 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
-    {ok, #state{}}.
+    {ok, Host} = application:get_env(host),
+    {ok, InterfaceIn} = application:get_env(interface_in),
+    {ok, InterfaceOut} = application:get_env(interface_out),
+    {ok, Uptime} = application:get_env(uptime_oid),
+    {ok, Community} = application:get_env(community),
+    {ok, MaxSpeed} = application:get_env(max_speed),
+    State = #state{
+        host = Host,
+        interface_in = InterfaceIn,
+        interface_out = InterfaceOut,
+        uptime_oid = Uptime,
+        community = Community,
+        max_speed = MaxSpeed
+    },
+    {ok, State}.
 
 handle_call({test}, _From, State) ->
     NewState = update_state(State),
@@ -74,7 +89,7 @@ update_state(S = #state{interface_in=InterfaceIn,
         ) ->
 
     {BytesIn, TimestampIn} =
-        case simple_snmp:get(S#state.host, [InterfaceIn, Uptime]) of
+        case simple_snmp:get(S#state.host, S#state.community, [InterfaceIn, Uptime]) of
             [{InterfaceIn, _, Bytes},{Uptime, _, Timestamp}] ->
                 {Bytes, Timestamp};
             {error, _} ->
@@ -83,7 +98,7 @@ update_state(S = #state{interface_in=InterfaceIn,
     SpeedIn = calculate_speed(BytesIn, S#state.bytes_in, TimestampIn, S#state.time_in),
 
     {BytesOut, TimestampOut} =
-        case simple_snmp:get(S#state.host, [InterfaceOut, Uptime]) of
+        case simple_snmp:get(S#state.host, S#state.community, [InterfaceOut, Uptime]) of
             [{InterfaceOut, _, Bytes2},{Uptime, _, Timestamp2}] ->
                 {Bytes2, Timestamp2};
             {error, _} ->
