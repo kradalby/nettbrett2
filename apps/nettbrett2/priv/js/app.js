@@ -25,9 +25,18 @@ let app = (function () {
     }
   }
 
+  let handle_connection_reset = function (event) {
+    console.log('Got event: ')
+    console.log(event)
+    app.init()
+  }
+
   return {
     init: function () {
       let socket = new WebSocket(getWSAddress())
+
+      socket.onerror = handle_connection_reset
+      socket.onclose = handle_connection_reset
 
       socket.onmessage = function (event) {
         console.log(event.data)
@@ -40,6 +49,10 @@ let app = (function () {
             bandwidth.update_peak_bandwidth(msg.data.peakSpeedDown, msg.data.peakSpeedUp)
             document.querySelector('#total-data-in').innerHTML = du.format_bytes(msg.data.bytesReceived, 3)
             document.querySelector('#total-data-out').innerHTML = du.format_bytes(msg.data.bytesSent, 3)
+            break
+          case 'pong':
+            console.log('received from pong:')
+            console.log(msg.data)
             break
         }
       }
