@@ -1,6 +1,6 @@
 'use strict'
 let bandwidth = require('./bandwidth.js')
-let du = require('./datausage.js')
+let datausage = require('./datausage.js')
 // let leases = require('./leases.js')
 
 let app = (function () {
@@ -47,8 +47,8 @@ let app = (function () {
             bandwidth.draw_chart_bandwidth_in(msg.data.speedDown, msg.data.maxSpeed)
             bandwidth.draw_chart_bandwidth_out(msg.data.speedUp, msg.data.maxSpeed)
             bandwidth.update_peak_bandwidth(msg.data.peakSpeedDown, msg.data.peakSpeedUp)
-            document.querySelector('#total-data-in').innerHTML = du.format_bytes(msg.data.bytesReceived, 3)
-            document.querySelector('#total-data-out').innerHTML = du.format_bytes(msg.data.bytesSent, 3)
+            datausage.update_in(msg.data.bytesReceived)
+            datausage.update_out(msg.data.bytesSent)
             break
           case 'pong':
             console.log('received from pong:')
