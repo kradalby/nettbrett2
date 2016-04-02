@@ -33,4 +33,8 @@
  {<<"ranch">>,
   {git,"https://github.com/ninenines/ranch",
        {ref,"741bfb73ca663394ecf7a73410506d66f01985a6"}},
-  1}].
+  1},
+ {<<"simple_snmp">>,
+  {git,"https://github.com/kradalby/simple_snmp.git",
+       {ref,"6813bcdd6ced654246d6e97ab49d2cd86f81a7c2"}},
+  0}].
