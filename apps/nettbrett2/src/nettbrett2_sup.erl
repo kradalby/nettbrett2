@@ -37,6 +37,13 @@ init([]) ->
             [ws_broadcast_handler]
         },
         {
+            bw, {bandwidth, start_link, []},
+            permanent,
+            5000,
+            worker,
+            [bandwidth]
+        },
+        {
             ping, {pong, start_link, []},
             permanent,
             5000,
