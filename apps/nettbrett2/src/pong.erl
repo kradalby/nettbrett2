@@ -17,7 +17,7 @@
 
 -export([
     alive/0,
-    scan/0
+    get/0
 ]).
 
 -record(state, {
@@ -49,7 +49,7 @@ handle_info({'DOWN', Ref, process, Pid, _Info}, State = #state{refs=Refs, hosts_
     NewRefs = lists:delete({Pid, Ref}, Refs),
     case Left - 1 of
         0 ->
-            gen_server:reply(Caller, {ok, Alive}),
+            gen_server:reply(Caller, json_payload(Alive)),
             {noreply, #state{}};
         N ->
             {noreply, State#state{refs=NewRefs, hosts_left=N}}
@@ -65,13 +65,6 @@ code_change(_OldVersion, State, _Extra) ->
 terminate(_Reason, _State) ->
     ok.
 
-alive() ->
-    gen_server:cast(?MODULE, {alive}).
-
-scan() ->
-    Networks = application:get_env('nettbrett2', networks, {"192.168.0.0", 23}),
-    gen_server:call(?MODULE, {scan, Networks}, infinity).
-
 ping_spawn(IP) ->
     spawn_monitor(fun () ->
         % io:format("Pinging: ~p from ~p ~n", [IP, self()]),
@@ -81,3 +74,19 @@ ping_spawn(IP) ->
             X -> X
         end
     end).
+
+json_payload(Hosts) ->
+        Map = #{
+            <<"data_type">> => <<"pong">>,
+            <<"data">> => #{
+                <<"hosts">> => Hosts
+            }
+        },
+    jiffy:encode(Map).
+
+alive() ->
+    gen_server:cast(?MODULE, {alive}).
+
+get() ->
+    Networks = application:get_env('nettbrett2', networks, {"192.168.0.0", 23}),
+    gen_server:call(?MODULE, {scan, Networks}, infinity).
