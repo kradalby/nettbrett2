@@ -28,7 +28,7 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-    {ok, { {one_for_one, 5, 60}, [
+    {ok, { {one_for_one, 20, 60}, [
         {
             taskrunner, {runner, start_link, []},
             permanent,
