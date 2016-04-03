@@ -44,7 +44,7 @@ let bandwidth = (function () {
   let chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'))
 
   let draw_chart_bandwidth_in = function (bits, max) {
-    let chart_center_bandwidth_in = document.querySelector('#bandwidth-in-center')
+    let chart_center_bandwidth_in = document.getElementById('bandwidth-in-center')
     let data = create_chart_data(bits, max)
 
     chart_bandwidth_in.draw(data, chart_options)
@@ -52,7 +52,7 @@ let bandwidth = (function () {
   }
 
   let draw_chart_bandwidth_out = function (bits, max) {
-    let chart_center_bandwidth_out = document.querySelector('#bandwidth-out-center')
+    let chart_center_bandwidth_out = document.getElementById('bandwidth-out-center')
     let data = create_chart_data(bits, max)
 
     chart_bandwidth_out.draw(data, chart_options)
@@ -60,8 +60,8 @@ let bandwidth = (function () {
   }
 
   let update_peak_bandwidth = function (inn, out) {
-    let bandwidth_peak_in = document.querySelector('#bandwidth-peak-in')
-    let bandwidth_peak_out = document.querySelector('#bandwidth-peak-out')
+    let bandwidth_peak_in = document.getElementById('bandwidth-peak-in')
+    let bandwidth_peak_out = document.getElementById('bandwidth-peak-out')
 
     bandwidth_peak_in.innerHTML = format_speed(inn, 2)
     bandwidth_peak_out.innerHTML = format_speed(out, 2)

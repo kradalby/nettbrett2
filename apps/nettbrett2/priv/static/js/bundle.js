@@ -108,7 +108,7 @@ var bandwidth = function () {
   var chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'));
 
   var draw_chart_bandwidth_in = function draw_chart_bandwidth_in(bits, max) {
-    var chart_center_bandwidth_in = document.querySelector('#bandwidth-in-center');
+    var chart_center_bandwidth_in = document.getElementById('bandwidth-in-center');
     var data = create_chart_data(bits, max);
 
     chart_bandwidth_in.draw(data, chart_options);
@@ -116,7 +116,7 @@ var bandwidth = function () {
   };
 
   var draw_chart_bandwidth_out = function draw_chart_bandwidth_out(bits, max) {
-    var chart_center_bandwidth_out = document.querySelector('#bandwidth-out-center');
+    var chart_center_bandwidth_out = document.getElementById('bandwidth-out-center');
     var data = create_chart_data(bits, max);
 
     chart_bandwidth_out.draw(data, chart_options);
@@ -124,8 +124,8 @@ var bandwidth = function () {
   };
 
   var update_peak_bandwidth = function update_peak_bandwidth(inn, out) {
-    var bandwidth_peak_in = document.querySelector('#bandwidth-peak-in');
-    var bandwidth_peak_out = document.querySelector('#bandwidth-peak-out');
+    var bandwidth_peak_in = document.getElementById('bandwidth-peak-in');
+    var bandwidth_peak_out = document.getElementById('bandwidth-peak-out');
 
     bandwidth_peak_in.innerHTML = format_speed(inn, 2);
     bandwidth_peak_out.innerHTML = format_speed(out, 2);
