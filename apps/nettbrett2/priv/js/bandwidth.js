@@ -1,10 +1,31 @@
 'use strict'
 
 let bandwidth = (function () {
+  let chart_bandwidth_in = null
+  let chart_bandwidth_out = null
+
+  google.charts.setOnLoadCallback(draw_init_bandwidth_in_chart)
+  function draw_init_bandwidth_in_chart () {
+    chart_bandwidth_in = new google.visualization.PieChart(document.getElementById('bandwidth-in-chart'))
+
+    chart_bandwidth_in.draw(create_chart_data(0, 100), chart_options)
+  }
+
+  google.charts.setOnLoadCallback(draw_init_bandwidth_out_chart)
+  function draw_init_bandwidth_out_chart () {
+    chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'))
+
+    chart_bandwidth_out.draw(create_chart_data(0, 100), chart_options)
+  }
+
   let chart_options = {
     pieHole: 0.7,
     backgroundColor: '#efefef',
     chartArea: {'width': '85%', 'height': '80%'},
+    animation: {
+      duration: 1000,
+      easing: 'out'
+    },
 
     pieSliceText: 'none',
     pieSliceBorderColor: 'black',
@@ -39,9 +60,6 @@ let bandwidth = (function () {
     let i = Math.floor(Math.log(bits_per_second) / Math.log(k))
     return (bits_per_second / Math.pow(k, i)).toPrecision(dm) + ' ' + sizes[i]
   }
-
-  let chart_bandwidth_in = new google.visualization.PieChart(document.getElementById('bandwidth-in-chart'))
-  let chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'))
 
   let draw_chart_bandwidth_in = function (bits, max) {
     let chart_center_bandwidth_in = document.getElementById('bandwidth-in-center')

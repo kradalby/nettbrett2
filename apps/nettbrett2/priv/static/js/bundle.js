@@ -67,10 +67,31 @@ app.init();
 'use strict';
 
 var bandwidth = function () {
+  var chart_bandwidth_in = null;
+  var chart_bandwidth_out = null;
+
+  google.charts.setOnLoadCallback(draw_init_bandwidth_in_chart);
+  function draw_init_bandwidth_in_chart() {
+    chart_bandwidth_in = new google.visualization.PieChart(document.getElementById('bandwidth-in-chart'));
+
+    chart_bandwidth_in.draw(create_chart_data(0, 100), chart_options);
+  }
+
+  google.charts.setOnLoadCallback(draw_init_bandwidth_out_chart);
+  function draw_init_bandwidth_out_chart() {
+    chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'));
+
+    chart_bandwidth_out.draw(create_chart_data(0, 100), chart_options);
+  }
+
   var chart_options = {
     pieHole: 0.7,
     backgroundColor: '#efefef',
     chartArea: { 'width': '85%', 'height': '80%' },
+    animation: {
+      duration: 1000,
+      easing: 'out'
+    },
 
     pieSliceText: 'none',
     pieSliceBorderColor: 'black',
@@ -103,9 +124,6 @@ var bandwidth = function () {
     var i = Math.floor(Math.log(bits_per_second) / Math.log(k));
     return (bits_per_second / Math.pow(k, i)).toPrecision(dm) + ' ' + sizes[i];
   };
-
-  var chart_bandwidth_in = new google.visualization.PieChart(document.getElementById('bandwidth-in-chart'));
-  var chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'));
 
   var draw_chart_bandwidth_in = function draw_chart_bandwidth_in(bits, max) {
     var chart_center_bandwidth_in = document.getElementById('bandwidth-in-center');
