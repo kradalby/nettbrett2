@@ -52,12 +52,12 @@ body {
   font-size: 50px;
   text-align: center;
 }
-#dhcp h3 {
+#pong h3 {
   margin-top: 15px;
   text-align: center;
   font-size: 50px;
 }
-#total-ip-leases {
+#total-ping {
   text-align: center;
   font-size: 150px;
 }
