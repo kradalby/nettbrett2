@@ -94,8 +94,8 @@ update_state(S = #state{interface_in=InterfaceIn,
         case simple_snmp:get(S#state.host, S#state.community, [InterfaceIn, Uptime]) of
             [{InterfaceIn, _, Bytes},{Uptime, _, Timestamp}] ->
                 {Bytes, Timestamp};
-            {error, _} ->
-                {S#state.bytes_in, S#state.time_in}
+            _ ->
+                {S#state.bytes_in, S#state.time_in + 1}
         end,
     SpeedIn = calculate_speed(BytesIn, S#state.bytes_in, TimestampIn, S#state.time_in),
 
@@ -103,8 +103,8 @@ update_state(S = #state{interface_in=InterfaceIn,
         case simple_snmp:get(S#state.host, S#state.community, [InterfaceOut, Uptime]) of
             [{InterfaceOut, _, Bytes2},{Uptime, _, Timestamp2}] ->
                 {Bytes2, Timestamp2};
-            {error, _} ->
-                {S#state.bytes_out, S#state.time_out}
+            _ ->
+                {S#state.bytes_out, S#state.time_out + 1}
         end,
     SpeedOut = calculate_speed(BytesOut, S#state.bytes_out, TimestampOut, S#state.time_out),
 
