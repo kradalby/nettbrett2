@@ -3,7 +3,7 @@
 
 var bandwidth = require('./bandwidth.js');
 var datausage = require('./datausage.js');
-// let leases = require('./leases.js')
+var pong = require('./pong.js');
 
 var app = function () {
   var getWSAddress = function getWSAddress() {
@@ -52,8 +52,7 @@ var app = function () {
             datausage.update_out(msg.data.bytes_out);
             break;
           case 'pong':
-            console.log('received from pong:');
-            console.log(msg.data.hosts);
+            pong.update_pings(msg.data.hosts);
             break;
         }
       };
@@ -64,7 +63,7 @@ var app = function () {
 
 app.init();
 
-},{"./bandwidth.js":2,"./datausage.js":3}],2:[function(require,module,exports){
+},{"./bandwidth.js":2,"./datausage.js":3,"./pong.js":4}],2:[function(require,module,exports){
 'use strict';
 
 var bandwidth = function () {
@@ -173,5 +172,22 @@ var datausage = function () {
 }();
 
 module.exports = datausage;
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+var pong = function () {
+  // let dhcp_widget = document.getElementById('dhcp')
+  var total_pings = document.getElementById('total-ping');
+
+  var update_pings = function update_pings(amount) {
+    total_pings.innerHTML = amount;
+  };
+  return {
+    update_pings: update_pings
+  };
+}();
+
+module.exports = pong;
 
 },{}]},{},[1]);

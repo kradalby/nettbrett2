@@ -1,7 +1,7 @@
 'use strict'
 let bandwidth = require('./bandwidth.js')
 let datausage = require('./datausage.js')
-// let leases = require('./leases.js')
+let pong = require('./pong.js')
 
 let app = (function () {
   let getWSAddress = function () {
@@ -50,8 +50,7 @@ let app = (function () {
             datausage.update_out(msg.data.bytes_out)
             break
           case 'pong':
-            console.log('received from pong:')
-            console.log(msg.data.hosts)
+            pong.update_pings(msg.data.hosts)
             break
         }
       }
