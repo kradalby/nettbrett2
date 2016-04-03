@@ -156,4 +156,4 @@ calculate_speed(CurrentBytes, PastBytes, CurrentTimeStamp, PastTimeStamp) ->
     round((ByteDelta * 8) / TimeDelta).
 
 get() ->
-    gen_server:call(bandwidth, get).
+    gen_server:call(bandwidth, get, infinity).
