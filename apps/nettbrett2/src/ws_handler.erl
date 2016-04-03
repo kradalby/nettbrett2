@@ -16,5 +16,4 @@ websocket_handle(Frame, Request, State) ->
     {ok, Request, State}.
 
 websocket_info(Message, Request, State) ->
-    io:format("Got INFO message: ~p~n", [Message]),
     {reply, {text, Message}, Request, State}.
