@@ -45,7 +45,7 @@ var app = function () {
 
         switch (msg.data_type) {
           case 'bandwidth':
-            bandwidth.draw_chart_bandwidth_in(msg.data.speed_in, msg.data.max_seed);
+            bandwidth.draw_chart_bandwidth_in(msg.data.speed_in, msg.data.max_speed);
             bandwidth.draw_chart_bandwidth_out(msg.data.speed_out, msg.data.max_speed);
             bandwidth.update_peak_bandwidth(msg.data.peak_speed_in, msg.data.peak_speed_out);
             datausage.update_in(msg.data.bytes_in);
@@ -56,7 +56,6 @@ var app = function () {
             break;
         }
       };
-      // leases.init()
     }
   };
 }();
