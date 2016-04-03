@@ -1,5 +1,5 @@
 {application, 'nettbrett2',
- [{description, "Dashboard with interesting network stats"},
+ [{description, "Dashboard with (hopefully) interesting network stats"},
   {vsn, "0.0.1"},
   {registered, []},
   {mod, {'nettbrett2_app', []}},
