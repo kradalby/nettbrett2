@@ -28,7 +28,14 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-    {ok, { {one_for_all, 3, 60}, [
+    {ok, { {one_for_all, 5, 60}, [
+        % {
+        %     taskrunner, {runner, start, []},
+        %     permanent,
+        %     5000,
+        %     worker,
+        %     [runner]
+        % },
         {
             ws_broadcast, {ws_broadcast_handler, start_link, []},
             permanent,
