@@ -35,8 +35,8 @@ let app = (function () {
     init: function () {
       let socket = new WebSocket(getWSAddress())
 
-      socket.onerror = handle_connection_reset
-      socket.onclose = handle_connection_reset
+      // socket.onerror = handle_connection_reset
+      // socket.onclose = handle_connection_reset
 
       socket.onmessage = function (event) {
         console.log(event.data)
