@@ -9,14 +9,21 @@
 
 
 start() ->
-    spawn(?MODULE, init, []).
+    Pid = spawn(?MODULE, init, []),
+    {ok, Pid}.
 
 start_link() ->
-    spawn_link(?MODULE, init, []).
+    Pid = spawn_link(?MODULE, init, []),
+    {ok, Pid}.
 
 init() ->
     start_loop(bandwidth, application:get_env('nettbrett2', bw_timeout, 5000)),
-    start_loop(pong, application:get_env('nettbrett2', pong_timeout, 10000)).
+    start_loop(pong, application:get_env('nettbrett2', pong_timeout, 10000)),
+
+    % Do not quit this process.
+    receive
+        {neverever} -> derp
+    end.
 
 start_loop(Module, Sleep) ->
     spawn_link(?MODULE, module_loop, [Module, Sleep]).
