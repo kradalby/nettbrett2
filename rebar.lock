@@ -20,7 +20,7 @@
   0},
  {<<"jiffy">>,
   {git,"https://github.com/davisp/jiffy.git",
-       {ref,"1febce3ca86c5ca5d5a3618ed3d5f125bb99e4c5"}},
+       {ref,"6fb6b0422826c4b9efa1b7ea2cad3ea18241cb08"}},
   0},
  {<<"pkt">>,
   {git,"git://github.com/msantos/pkt.git",
