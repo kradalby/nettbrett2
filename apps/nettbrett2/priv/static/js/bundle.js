@@ -41,7 +41,6 @@ var app = function () {
       // socket.onclose = handle_connection_reset
 
       socket.onmessage = function (event) {
-        console.log(event.data);
         var msg = JSON.parse(event.data);
 
         switch (msg.data_type) {
