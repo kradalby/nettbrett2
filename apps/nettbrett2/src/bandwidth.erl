@@ -29,6 +29,7 @@
 
 -record(state, {
     host = "",
+    port = 161,
     interface_in = [],
     interface_out = [],
     uptime_oid = [],
@@ -51,19 +52,14 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
-    {ok, Host} = application:get_env(host),
-    {ok, InterfaceIn} = application:get_env(interface_in),
-    {ok, InterfaceOut} = application:get_env(interface_out),
-    {ok, Uptime} = application:get_env(uptime_oid),
-    {ok, Community} = application:get_env(community),
-    {ok, MaxSpeed} = application:get_env(max_speed),
     State = #state{
-        host = Host,
-        interface_in = InterfaceIn,
-        interface_out = InterfaceOut,
-        uptime_oid = Uptime,
-        community = Community,
-        max_speed = MaxSpeed
+        host = application:get_env('nettbrett2', snmp_host, "127.0.0.1"),
+        port = application:get_env('nettbrett2', snmp_port, 161),
+        interface_in = application:get_env('nettbrett2', interface_in, [1,3,6,1,2,1,31,1,1,1,6,1]),
+        interface_out = application:get_env('nettbrett2', interface_out, [1,3,6,1,2,1,31,1,1,1,10,1]),
+        uptime_oid = application:get_env('nettbrett2', uptime_oid, [1,3,6,1,2,1,1,3,0]),
+        community = application:get_env('nettbrett2', community, "public"),
+        max_speed = application:get_env('nettbrett2', max_speed, 1000000000)
     },
     {ok, State}.
 
