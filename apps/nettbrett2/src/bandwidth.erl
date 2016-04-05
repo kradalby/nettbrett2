@@ -52,8 +52,9 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
+    {ok, IP} = inet:parse_address(application:get_env('nettbrett2', snmp_host, "127.0.0.1")),
     State = #state{
-        host = application:get_env('nettbrett2', snmp_host, "127.0.0.1"),
+        host = IP,
         port = application:get_env('nettbrett2', snmp_port, 161),
         interface_in = application:get_env('nettbrett2', interface_in, [1,3,6,1,2,1,31,1,1,1,6,1]),
         interface_out = application:get_env('nettbrett2', interface_out, [1,3,6,1,2,1,31,1,1,1,10,1]),
@@ -87,7 +88,7 @@ update_state(S = #state{interface_in=InterfaceIn,
         ) ->
 
     {BytesIn, TimestampIn} =
-        case simple_snmp:get(S#state.host, S#state.community, [InterfaceIn, Uptime]) of
+        case simple_snmp:get({S#state.host, S#state.port}, S#state.community, [InterfaceIn, Uptime]) of
             [{InterfaceIn, _, Bytes},{Uptime, _, Timestamp}] ->
                 {Bytes, Timestamp};
             _ ->
@@ -96,7 +97,7 @@ update_state(S = #state{interface_in=InterfaceIn,
     SpeedIn = calculate_speed(BytesIn, S#state.bytes_in, TimestampIn, S#state.time_in),
 
     {BytesOut, TimestampOut} =
-        case simple_snmp:get(S#state.host, S#state.community, [InterfaceOut, Uptime]) of
+        case simple_snmp:get({S#state.host, S#state.port}, S#state.community, [InterfaceOut, Uptime]) of
             [{InterfaceOut, _, Bytes2},{Uptime, _, Timestamp2}] ->
                 {Bytes2, Timestamp2};
             _ ->
