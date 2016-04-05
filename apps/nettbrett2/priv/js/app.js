@@ -2,6 +2,7 @@
 let bandwidth = require('./bandwidth.js')
 let datausage = require('./datausage.js')
 let pong = require('./pong.js')
+let ReconnectingWebSocket = require('shopify-reconnecting-websocket')
 
 let app = (function () {
   let getWSAddress = function () {
@@ -25,15 +26,9 @@ let app = (function () {
     }
   }
 
-  let handle_connection_reset = function (event) {
-    console.log('Got event: ')
-    console.log(event)
-    app.init()
-  }
-
   return {
     init: function () {
-      let socket = new WebSocket(getWSAddress())
+      let socket = new ReconnectingWebSocket(getWSAddress())
 
       // socket.onerror = handle_connection_reset
       // socket.onclose = handle_connection_reset

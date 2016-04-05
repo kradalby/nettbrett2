@@ -48,7 +48,6 @@ let bandwidth = (function () {
     data.push(['unused', unused])
 
     data = google.visualization.arrayToDataTable(data)
-    console.log(data)
     return data
   }
 
