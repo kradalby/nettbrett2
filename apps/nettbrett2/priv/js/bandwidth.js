@@ -23,10 +23,9 @@ let bandwidth = (function () {
     backgroundColor: '#efefef',
     chartArea: {'width': '85%', 'height': '80%'},
     animation: {
-      duration: 1000,
-      easing: 'out'
+      duration: 3000,
+      easing: 'in'
     },
-
     pieSliceText: 'none',
     pieSliceBorderColor: 'black',
     tooltip: { trigger: 'none' },
@@ -45,10 +44,11 @@ let bandwidth = (function () {
     let used = (bits / max) * 100
     let unused = 100 - used
 
-    data.push(['', used])
-    data.push(['', unused])
+    data.push(['used', used])
+    data.push(['unused', unused])
 
     data = google.visualization.arrayToDataTable(data)
+    console.log(data)
     return data
   }
 
