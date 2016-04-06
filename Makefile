@@ -4,8 +4,9 @@ SHELL := /bin/bash
 bootstrap-debian:
 	echo "Adding Erlang repositories"
 	wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-	dpkg -i erlang-solutions_1.0_all.deb -y
+	dpkg -i erlang-solutions_1.0_all.deb
 	echo "Installing Erlang"
+	apt-get update
 	apt-get install erlang -y
 	echo "Downloading rebar3"
 	wget https://s3.amazonaws.com/rebar3/rebar3
