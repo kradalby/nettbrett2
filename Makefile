@@ -5,6 +5,7 @@ bootstrap-debian:
 	echo "Adding Erlang repositories"
 	wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
 	dpkg -i erlang-solutions_1.0_all.deb
+	rm -rf erlang-solutions_1.0_all.deb
 	echo "Installing Erlang"
 	apt-get update
 	apt-get install erlang -y
