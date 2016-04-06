@@ -1,6 +1,19 @@
 PATH  := node_modules/.bin:$(PATH)
 SHELL := /bin/bash
 
+bootstrap-debian:
+	echo "Adding Erlang repositories"
+	wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+	dpkg -i erlang-solutions_1.0_all.deb -y
+	echo "Installing Erlang"
+	apt-get install erlang -y
+	echo "Downloading rebar3"
+	wget https://s3.amazonaws.com/rebar3/rebar3
+	chmod +x rebar3
+	echo "Compiling nettbrett2"
+	./rebar3 compile
+
+
 build.css:
 	lessc apps/nettbrett2/priv/less/style.less apps/nettbrett2/priv/static/css/bundle.css
 
