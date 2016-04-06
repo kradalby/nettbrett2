@@ -1,5 +1,7 @@
 [
     {'nettbrett2', [
+        % Web configuration
+        {http_port, 8080}, % default 80
         % Bandwidth configuration
         {bw_timeout, 3000},
         {snmp_host, "127.0.0.1"},

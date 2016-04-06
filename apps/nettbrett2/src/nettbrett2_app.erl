@@ -26,7 +26,7 @@ start(_StartType, _StartArgs) ->
         ]}
     ]),
     {ok, _} = cowboy:start_http(nettbrett2_http_listener, 100,
-        [{port, 8080}],
+        [{port, application:get_env('nettbrett2', http_port, 80)}],
         [{env, [{dispatch, Dispatch}]}]
     ),
     'nettbrett2_sup':start_link().
