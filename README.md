@@ -16,7 +16,7 @@ Build
 Install build-essentials and git:
 
     apt-get update
-    apt-get install build-essential git -y
+    apt-get install build-essential git vim -y
 
 Clone repo:
 
