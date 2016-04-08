@@ -32,15 +32,7 @@ Run the app via Erlang VM shell:
     ./rebar3 shell
 
 
-    roadmap
+## Todo
 
-    ~snmp
-    ~config file
-    ~json
-    ~scheduler/taskrunner/loop/sleep
-    ~handle timeout snmp
-    ~fix in graph
-    ~smooth updating of the graphs
-    ~better reconnect
-    save peak
-    erlsrcds
+- Save peak data
+- Use erlsrcds to get game data
