@@ -82,7 +82,7 @@ json_payload(Hosts) ->
                 <<"hosts">> => Hosts
             }
         },
-    jiffy:encode(Map).
+    jsx:encode(Map).
 
 alive() ->
     gen_server:cast(?MODULE, {alive}).

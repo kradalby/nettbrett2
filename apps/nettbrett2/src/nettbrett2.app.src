@@ -10,8 +10,8 @@
     erlsrcds,
     erl_ip4_utils,
     gen_icmp,
-    jiffy,
-    simple_snmp
+    simple_snmp,
+    jsx
    ]},
   {env,[]},
   {modules, []},

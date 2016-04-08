@@ -137,7 +137,7 @@ json_payload(_State=#state{
                 <<"bytes_out">> => BytesOut
             }
         },
-    jiffy:encode(Map).
+    jsx:encode(Map).
 
 
 -spec calculate_speed(integer(), integer(), integer(), integer()) -> integer().
