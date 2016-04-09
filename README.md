@@ -1,5 +1,6 @@
 nettbrett2
 =====
+[![Build Status](https://drone.fap.no/api/badges/kradalby/nettbrett2/status.svg)](https://drone.fap.no/kradalby/nettbrett2)
 
 Dashboard with interesting network stats
 
