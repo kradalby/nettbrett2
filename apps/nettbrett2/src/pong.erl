@@ -47,6 +47,7 @@ handle_cast({alive}, State = #state{hosts_alive=Alive}) ->
 
 handle_info({'DOWN', Ref, process, Pid, _Info}, State = #state{refs=Refs, hosts_left=Left, hosts_alive=Alive, caller=Caller}) ->
     NewRefs = lists:delete({Pid, Ref}, Refs),
+    erlang:demonitor(Ref),
     case Left - 1 of
         0 ->
             gen_server:reply(Caller, json_payload(Alive)),

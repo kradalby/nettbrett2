@@ -46,6 +46,7 @@ handle_cast(_Message, State) ->
 
 handle_info({'DOWN', Ref, process, Pid, _}, State) ->
     io:format("Connection to ~p lost ~n", [{Ref, Pid}]),
+    erlang:demonitor(Ref),
     case lists:keyfind(Ref, 1, State) of
         false -> {noreply, State};
         {Ref, Pid} ->
