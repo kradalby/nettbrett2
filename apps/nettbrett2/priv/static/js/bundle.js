@@ -63,19 +63,23 @@ app.init();
 var bandwidth = function () {
   var chart_bandwidth_in = null;
   var chart_bandwidth_out = null;
+  var current_data_in = null;
+  var current_data_out = null;
 
   google.charts.setOnLoadCallback(draw_init_bandwidth_in_chart);
   function draw_init_bandwidth_in_chart() {
     chart_bandwidth_in = new google.visualization.PieChart(document.getElementById('bandwidth-in-chart'));
 
-    chart_bandwidth_in.draw(create_chart_data(0, 100), chart_options);
+    current_data_in = create_chart_data(0, 100);
+    chart_bandwidth_in.draw(current_data_in, chart_options);
   }
 
   google.charts.setOnLoadCallback(draw_init_bandwidth_out_chart);
   function draw_init_bandwidth_out_chart() {
     chart_bandwidth_out = new google.visualization.PieChart(document.getElementById('bandwidth-out-chart'));
 
-    chart_bandwidth_out.draw(create_chart_data(0, 100), chart_options);
+    current_data_out = create_chart_data(0, 100);
+    chart_bandwidth_out.draw(current_data_out, chart_options);
   }
 
   var chart_options = {
@@ -109,6 +113,46 @@ var bandwidth = function () {
     return data;
   };
 
+  var animate_transition = function animate_transition(chart, current_data, new_data) {
+    var current_usage = current_data.getValue(0, 1);
+    var new_usage = new_data.getValue(0, 1);
+
+    var start = 0;
+    var end = 0;
+
+    var counter = 0;
+    var render_steps = 100;
+    var render_time = 1000;
+
+    if (current_usage > new_usage) {
+      var _loop = function _loop(p) {
+        setTimeout(function () {
+          chart.draw(create_chart_data(p, 100 - p), chart_options);
+        }, counter * render_time / render_steps);
+        counter += 1;
+      };
+
+      // Animate from more to less
+      for (var p = current_usage; p > new_usage; p -= (current_usage - new_usage) / render_steps) {
+        _loop(p);
+      }
+    } else {
+      var _loop2 = function _loop2(_p) {
+        setTimeout(function () {
+          chart.draw(create_chart_data(_p, 100 - _p), chart_options);
+        }, counter * render_time / render_steps);
+        counter += 1;
+      };
+
+      // Animate from less to more
+      for (var _p = current_usage; _p < new_usage; _p += (new_usage - current_usage) / render_steps) {
+        _loop2(_p);
+      }
+    }
+
+    return new_data;
+  };
+
   var format_speed = function format_speed(bits_per_second, decimals) {
     if (bits_per_second === 0) return '0 bit/s';
     var k = 1024;
@@ -122,7 +166,7 @@ var bandwidth = function () {
     var chart_center_bandwidth_in = document.getElementById('bandwidth-in-center');
     var data = create_chart_data(bits, max);
 
-    chart_bandwidth_in.draw(data, chart_options);
+    current_data_in = animate_transition(chart_bandwidth_in, current_data_in, data);
     chart_center_bandwidth_in.innerHTML = format_speed(bits, 2);
   };
 
@@ -130,7 +174,7 @@ var bandwidth = function () {
     var chart_center_bandwidth_out = document.getElementById('bandwidth-out-center');
     var data = create_chart_data(bits, max);
 
-    chart_bandwidth_out.draw(data, chart_options);
+    current_data_out = animate_transition(chart_bandwidth_out, current_data_out, data);
     chart_center_bandwidth_out.innerHTML = format_speed(bits, 2);
   };
 
