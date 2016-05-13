@@ -59,29 +59,26 @@ let bandwidth = (function () {
     let current_usage = current_data.getValue(0, 1)
     let new_usage = new_data.getValue(0, 1)
 
-    let start = 0
-    let end = 0
-
     let counter = 0
     let render_steps = 100
     let render_time = 1000
 
     if (current_usage > new_usage) {
         // Animate from more to less
-        for (let p = current_usage; p > new_usage; p -= ((current_usage-new_usage) / render_steps)) {
-            setTimeout(() => {
-                chart.draw(create_chart_data(p, 100 - p), chart_options)
-            }, counter * render_time/render_steps)
-            counter += 1
-        }
+      for (let p = current_usage; p > new_usage; p -= ((current_usage - new_usage) / render_steps)) {
+        setTimeout(() => {
+          chart.draw(create_chart_data(p, 100 - p), chart_options)
+        }, counter * render_time / render_steps)
+        counter += 1
+      }
     } else {
         // Animate from less to more
-        for (let p = current_usage; p < new_usage; p += ((new_usage-current_usage) / render_steps)) {
-            setTimeout(() => {
-                chart.draw(create_chart_data(p, 100 - p), chart_options)
-            }, counter * render_time/render_steps)
-            counter += 1
-        }
+      for (let p = current_usage; p < new_usage; p += ((new_usage - current_usage) / render_steps)) {
+        setTimeout(() => {
+          chart.draw(create_chart_data(p, 100 - p), chart_options)
+        }, counter * render_time / render_steps)
+        counter += 1
+      }
     }
 
     return new_data

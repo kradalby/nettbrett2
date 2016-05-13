@@ -117,9 +117,6 @@ var bandwidth = function () {
     var current_usage = current_data.getValue(0, 1);
     var new_usage = new_data.getValue(0, 1);
 
-    var start = 0;
-    var end = 0;
-
     var counter = 0;
     var render_steps = 100;
     var render_time = 1000;
