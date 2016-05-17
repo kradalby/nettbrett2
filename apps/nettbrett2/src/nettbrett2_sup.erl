@@ -56,6 +56,13 @@ init([]) ->
             5000,
             worker,
             [pong]
+        },
+        {
+            source, {srcds, start_link, []},
+            permanent,
+            5000,
+            worker,
+            [srcds]
         }
     ]} }.
 
