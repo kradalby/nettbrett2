@@ -47,6 +47,8 @@ let app = (function () {
           case 'pong':
             pong.update_pings(msg.data.hosts)
             break
+          case 'srcds':
+            console.log(msg.data)
         }
       }
     }
