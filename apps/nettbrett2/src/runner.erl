@@ -19,10 +19,10 @@ start_link() ->
 init() ->
     io:format("Starting bandwidth loop~n"),
     start_loop(bandwidth, application:get_env('nettbrett2', bw_timeout, 5000)),
-    io:format("Starting pong loop~n"),
-    start_loop(pong, application:get_env('nettbrett2', pong_timeout, 10000)),
-    io:format("Starting srcds loop~n"),
-    start_loop(srcds, application:get_env('nettbrett2', srcds_timeout, 5000)),
+%    io:format("Starting pong loop~n"),
+%    start_loop(pong, application:get_env('nettbrett2', pong_timeout, 10000)),
+%    io:format("Starting srcds loop~n"),
+%    start_loop(srcds, application:get_env('nettbrett2', srcds_timeout, 5000)),
     % Do not quit this process.
     receive
         {neverever} -> derp
