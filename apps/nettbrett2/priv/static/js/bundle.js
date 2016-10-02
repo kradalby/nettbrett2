@@ -117,8 +117,6 @@ var bandwidth = function () {
     var current_usage = current_data.getValue(0, 1);
     var new_usage = new_data.getValue(0, 1);
 
-    console.log('animate_transition', current_usage, new_usage);
-
     var counter = 0;
     var render_steps = 100;
     var render_time = 1000;
@@ -181,8 +179,17 @@ var bandwidth = function () {
     var bandwidth_peak_in = document.getElementById('bandwidth-peak-in');
     var bandwidth_peak_out = document.getElementById('bandwidth-peak-out');
 
-    bandwidth_peak_in.innerHTML = format_speed(inn, 2);
-    bandwidth_peak_out.innerHTML = format_speed(out, 2);
+    // Some wierd formatting error
+    if (inn < 1100000000) {
+      bandwidth_peak_in.innerHTML = format_speed(inn, 3);
+    } else {
+      bandwidth_peak_in.innerHTML = format_speed(inn, 2);
+    }
+    if (out < 1100000000) {
+      bandwidth_peak_out.innerHTML = format_speed(out, 3);
+    } else {
+      bandwidth_peak_out.innerHTML = format_speed(out, 2);
+    }
   };
 
   return {

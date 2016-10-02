@@ -59,8 +59,6 @@ let bandwidth = (function () {
     let current_usage = current_data.getValue(0, 1)
     let new_usage = new_data.getValue(0, 1)
 
-    console.log('animate_transition', current_usage, new_usage)
-
     let counter = 0
     let render_steps = 100
     let render_time = 1000
@@ -115,8 +113,18 @@ let bandwidth = (function () {
     let bandwidth_peak_in = document.getElementById('bandwidth-peak-in')
     let bandwidth_peak_out = document.getElementById('bandwidth-peak-out')
 
-    bandwidth_peak_in.innerHTML = format_speed(inn, 2)
-    bandwidth_peak_out.innerHTML = format_speed(out, 2)
+
+    // Some wierd formatting error
+    if (inn < 1100000000) {
+      bandwidth_peak_in.innerHTML = format_speed(inn, 3)
+    } else {
+      bandwidth_peak_in.innerHTML = format_speed(inn, 2)
+    }
+    if (out < 1100000000) {
+      bandwidth_peak_out.innerHTML = format_speed(out, 3)
+    } else {
+      bandwidth_peak_out.innerHTML = format_speed(out, 2)
+    }
   }
 
   return {
