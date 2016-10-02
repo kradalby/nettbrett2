@@ -5,5 +5,5 @@ services:
     ports:
       - "8080:8080"
     volumes:
-        - "./config/sys.config":"/srv/app/releases/0.0.1/sys.config"
+      - "./config/sys.config:/srv/app/releases/0.0.1/sys.config"
     restart: always
