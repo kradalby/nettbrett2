@@ -5,14 +5,17 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   color: #666;
 }
+.container {
+  text-align: center;
+}
 .widget {
   display: inline-block;
   vertical-align: top;
   box-sizing: border-box;
   background: #efefef;
   width: 350px;
-  height: 450px;
-  margin: 20px 20px 20px 0;
+  height: 400px;
+  margin: 20px 20px 0 0;
 }
 .widget h1 {
   background: #d6d6d6;
@@ -24,7 +27,7 @@ body {
   position: relative;
 }
 .bandwidth .bandwidth-chart {
-  height: 400px;
+  height: 350px;
   width: 350px;
 }
 .bandwidth .bandwidth-center {
@@ -32,14 +35,19 @@ body {
   line-height: 330px;
   position: absolute;
   text-align: center;
-  top: 30px;
+  top: 10px;
   left: 55px;
   vertical-align: middle;
   width: 250px;
   font-size: 33px;
 }
+#datausage,
+#bandwidth-peak {
+  height: 350px;
+}
 #datausage h3,
 #bandwidth-peak h3 {
+  text-align: left;
   margin-top: 15px;
   font-size: 50px;
 }
@@ -73,22 +81,25 @@ body {
 }
 @media only screen and (min-width: 600px) {
   .container {
-    width: 580px;
+    width: 600px;
     margin: 0 auto;
   }
 }
 @media only screen and (min-width: 960px) {
   .container {
-    width: 940px;
+    width: 960px;
+    margin: 0 auto;
   }
 }
 @media only screen and (min-width: 1140px) {
   .container {
-    width: 1120px;
+    width: 1140px;
+    margin: 0 auto;
   }
 }
 @media only screen and (min-width: 1360px) {
   .container {
-    width: 1300px;
+    width: 1360px;
+    margin: 0 auto;
   }
 }

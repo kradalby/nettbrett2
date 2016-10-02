@@ -59,6 +59,8 @@ let bandwidth = (function () {
     let current_usage = current_data.getValue(0, 1)
     let new_usage = new_data.getValue(0, 1)
 
+    console.log('animate_transition', current_usage, new_usage)
+
     let counter = 0
     let render_steps = 100
     let render_time = 1000

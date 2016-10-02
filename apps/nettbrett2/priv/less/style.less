@@ -12,6 +12,9 @@ body {
     color: #666;
 }
 
+.container {
+    text-align: center;
+}
 
 .widget {
     display: inline-block;
@@ -19,11 +22,11 @@ body {
     box-sizing: border-box;
     background: @widget-background;
     width: 350px;
-    height: 450px;
+    height: 400px;
     @p-size: 20px;
     //padding: @p-size @p-size @p-size @p-size;
-    margin: @p-size @p-size @p-size 0;
-
+    margin: @p-size @p-size 0 0;
+    
     h1 {
         background: darken(@widget-background, 10%);
         text-align: center;
@@ -38,7 +41,7 @@ body {
 
 .bandwidth {
     .bandwidth-chart {
-        height: 400px;
+        height: 350px;
         width: 350px;
     }
 
@@ -47,7 +50,7 @@ body {
         line-height: 330px;
         position: absolute;
         text-align: center;
-        top: 30px;
+        top: 10px;
         left: 55px;
         vertical-align: middle;
         width: 250px;
@@ -57,7 +60,9 @@ body {
 }
 
 #datausage, #bandwidth-peak {
+    height: 350px;
     h3 {
+        text-align: left;
         margin-top: 15px;
         font-size: 50px;
     }
@@ -107,25 +112,28 @@ body {
 
 @media only screen and (min-width:600px){
     .container {
-        width: 580px;
+        width: 600px;
         margin: 0 auto;
     }
 }
 
 @media only screen and (min-width:960px){
     .container {
-        width: 940px;
+        width: 960px;
+        margin: 0 auto;
     }
 }
 
 @media only screen and (min-width:1140px){
     .container {
-        width: 1120px;
+        width: 1140px;
+        margin: 0 auto;
     }
 }
 
 @media only screen and (min-width:1360px){
     .container {
-        width: 1300px;
+        width: 1360px;
+        margin: 0 auto;
     }
 }

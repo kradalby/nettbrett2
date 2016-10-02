@@ -32,25 +32,23 @@ var app = function () {
     init: function init() {
       var socket = new ReconnectingWebSocket(getWSAddress());
 
-      // socket.onerror = handle_connection_reset
-      // socket.onclose = handle_connection_reset
-
       socket.onmessage = function (event) {
         var msg = JSON.parse(event.data);
 
         switch (msg.data_type) {
           case 'bandwidth':
+            console.log(msg);
             bandwidth.draw_chart_bandwidth_in(msg.data.speed_in, msg.data.max_speed);
             bandwidth.draw_chart_bandwidth_out(msg.data.speed_out, msg.data.max_speed);
             bandwidth.update_peak_bandwidth(msg.data.peak_speed_in, msg.data.peak_speed_out);
             datausage.update_in(msg.data.bytes_in);
             datausage.update_out(msg.data.bytes_out);
             break;
-          case 'pong':
-            pong.update_pings(msg.data.hosts);
-            break;
-          case 'srcds':
-            console.log(msg.data);
+          //case 'pong':
+          //  pong.update_pings(msg.data.hosts)
+          //  break
+          //case 'srcds':
+          //  console.log(msg.data)
         }
       };
     }
@@ -118,6 +116,8 @@ var bandwidth = function () {
   var animate_transition = function animate_transition(chart, current_data, new_data) {
     var current_usage = current_data.getValue(0, 1);
     var new_usage = new_data.getValue(0, 1);
+
+    console.log('animate_transition', current_usage, new_usage);
 
     var counter = 0;
     var render_steps = 100;

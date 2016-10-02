@@ -4,12 +4,12 @@
   "description": "nettbrett2",
   "main": ".",
   "devDependencies": {
-    "autoprefixer": "^6.3.5",
-    "babelify": "^7.2.0",
-    "browserify": "^13.0.0",
-    "less": "^2.6.1",
+    "autoprefixer": "^6.5.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "less": "^2.7.1",
     "shopify-reconnecting-websocket": "^0.1.0",
-    "uglifyify": "^3.0.1"
+    "uglifyify": "^3.0.3"
   },
   "scripts": {
     "test": "."
