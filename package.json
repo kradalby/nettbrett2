@@ -8,6 +8,7 @@
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
     "less": "^2.7.1",
+    "request": "^2.75.0",
     "shopify-reconnecting-websocket": "^0.1.0",
     "uglifyify": "^3.0.3"
   },
